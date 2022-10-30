@@ -1,11 +1,9 @@
 import socketserver
 import threading
-import time
-from typing import Any
 
 
 # It receives data from the client, processes it, and sends it back
-class Server(socketserver.BaseRequestHandler):
+class ServerInstace(socketserver.BaseRequestHandler):
     def handle(self):
         """
         It receives data from the client, processes it, and sends it back
@@ -19,7 +17,7 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
 
 class Server:
-    def __init__(self, PORT: int, HOST: str, ThreadedTCPInstace: ThreadedTCPServer) -> None:
+    def __init__(self, PORT: int, HOST: str, ThreadedTCPInstace):
         """
         A constructor for the class.
 
