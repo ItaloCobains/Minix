@@ -9,6 +9,6 @@ ip, host = s.getIpAndHost()
 
 print("{}, {}".format(ip, host))
 
-time.sleep(10)
+time.sleep(110)
 
 s.shutdown()
