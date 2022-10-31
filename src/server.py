@@ -3,6 +3,7 @@ import threading
 import platform
 import os
 import sys
+import socket
 import subprocess
 import numpy as np
 import cv2
@@ -13,6 +14,7 @@ import random
 from subprocess import Popen
 from typing import Any, Literal
 from typing_extensions import Self
+from datetime import datetime
 
 
 # It receives data from the client, processes it, and sends it back
@@ -124,7 +126,50 @@ class Commands:
         decodeit.write(base64.b64decode(byte))
         decodeit.close()
         return self.imageNameDecoded
+
+    def portScanner(self: object, closePort: int = 0, ip: str =  "127.0.0.1"):
+        """
+        The above function is a port scanner. It scans the ports of a given IP address.
         
+        :param self: object
+        :type self: object
+        :param closePort: If you want to see the closed ports, set this parameter to 1,
+        defaults to 0
+        :type closePort: int (optional)
+        :param ip: The IP address of the host you want to scan, defaults to 127.0.0.1
+        :type ip: str (optional)
+        """
+        
+        p = []
+        
+        ports = [20, 21, 22, 23, 42, 43, 43, 69, 80, 109, 110, 115, 118, 143,
+              156, 220, 389, 443, 465, 513, 514, 530, 547, 587, 636, 873,
+              989, 990, 992, 993, 995, 1433, 1521, 2049, 2081, 2083, 2086,
+              3306, 3389, 5432, 5500, 5800]
+        
+        try:
+            for port in ports:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(3)
+                result = sock.connect_ex((ip, port))
+            if result == 0:
+                p.append(port)
+            else:
+                if closePort > 0:
+                    p.append(port)
+            sock.close()
+        except KeyboardInterrupt:
+            print('Você pressionou <Ctrl>+<C>')
+            sys.exit()
+
+        except socket.gaierror:
+            print('O hostname não pode ser resolvido')
+            sys.exit()
+
+        except socket.error:
+            print('Não foi possível conectar no servidor')
+            sys.exit()
+                    
 
 class Server:
     def __init__(self: object, PORT: int, HOST: str, ThreadedTCPInstace: Any | ThreadedTCPServer) -> None:
