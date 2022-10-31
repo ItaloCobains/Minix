@@ -19,5 +19,5 @@
         "titleBar.inactiveForeground": "#e7e7e799"
     },
     "peacock.color": "#1857a4",
-    "python.analysis.extraPaths": ["./src"]
+    "python.analysis.extraPaths": ["./src", "./src"]
 }

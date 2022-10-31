@@ -1,3 +1,3 @@
 source venv/bin/activate
 
-pip freeze > requirements.txt
+pip3 freeze > requirements.txt
